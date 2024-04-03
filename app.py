@@ -1,11 +1,10 @@
 import tkinter as tk
 from pytube import YouTube
 from PIL import Image, ImageTk
-import os
+from pytube import Playlist
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb 
-import sys 
-
+import os 
 
 class Gui:
     def __init__(self, master) -> None:
@@ -51,16 +50,48 @@ class Gui:
         self.btn_ruta = tk.Button(self.frame_info, text='Buscar', command=self.getPath)
         self.btn_ruta.grid(row=1, column=1, sticky='w')
 
-        self.btn_dwn = tk.Button(self.frame_info, text='Descargar', command=self.download)
+        self.btn_dwn = tk.Button(self.frame_info, text='Descargar', command=self.download_video)
         self.btn_dwn.grid(row=2, column=0, columnspan=2)
 
-    def download(self) -> None:
+
+    def verificar_tipo_url(self):
         url = self.txt_url.get()
-        print(url)
+        try:
+            yt = YouTube(url)
+            return yt
+        except:
+            try:
+                pl = Playlist(url)
+                return pl
+            except:
+                return "Url no reconocida"
+
+    def download_video(self) -> None:
+        my_object = self.verificar_tipo_url()
+        if isinstance(my_object, YouTube): 
+            self.download_YouTube(my_object)
+            mb.showinfo(title='Bien!', message='Descarga finalizada.')
+        elif isinstance(my_object, Playlist):
+            YouTube_list = my_object.videos
+            self.path = os.path.join(self.path, my_object.title)
+            os.makedirs(name=self.path, exist_ok=True)
+            for element in YouTube_list:
+                self.download_YouTube(element)
+            mb.showinfo(title='Bien!', message='Descarga finalizada.')
+        else:
+            mb.showerror(title='Descarga fallida', 
+                        message='La URL o la ruta de destino proporcionada no es valida.')
+
+    def download_YouTube(self, my_object):
+        vid = my_object.streams.get_highest_resolution()
+        print(f'[+] Se esta descargando el video: {my_object.title}')
+        output_path = vid.download(output_path=self.path, timeout=10, max_retries=1, skip_existing=True)
+        #print(output_path)
         
     def getPath(self) -> None:
-        path = fd.askdirectory(initialdir='./', title='Ruta donde se va guardar la descarga')
-        print(path)
+        self.path = fd.askdirectory(initialdir='./', title='Ruta donde se va guardar la descarga')
+        
+
 
 if __name__ == '__main__':
     root = tk.Tk()
