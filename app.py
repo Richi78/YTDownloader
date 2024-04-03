@@ -72,10 +72,10 @@ class Gui:
             self.download_YouTube(my_object)
             mb.showinfo(title='Bien!', message='Descarga finalizada.')
         elif isinstance(my_object, Playlist):
-            YouTube_list = my_object.videos
+            youTube_list = my_object.videos
             self.path = os.path.join(self.path, my_object.title)
             os.makedirs(name=self.path, exist_ok=True)
-            for element in YouTube_list:
+            for element in youTube_list:
                 self.download_YouTube(element)
             mb.showinfo(title='Bien!', message='Descarga finalizada.')
         else:
