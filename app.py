@@ -10,7 +10,7 @@ class Gui:
     def __init__(self, master) -> None:
         self.master = master
         self.master.geometry('300x300')
-        self.master.title('Mi descargadar de videos de YouTube')
+        self.master.title('YTDownloader')
         
         # Imagen tortuguita
         """self.img = tk.PhotoImage(file='Tortuguita.png')
