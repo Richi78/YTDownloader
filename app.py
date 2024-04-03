@@ -31,15 +31,24 @@ class Gui:
 
         # Frame info
         self.frame_info = tk.Frame(self.master)
-        self.frame_info.place(x=301,y=0)
-        self.frame_info.config(bg='yellow', width=400, height=200)
+        self.frame_info.place(x=302,y=0)
+        self.frame_info.config(width=400, height=200) #bg='yellow', 
 
-        self.lbl_url = tk.Label(self.frame_info, text='Ingrese la Url:', font=('Arial', 12), width=10)
-        self.lbl_url.place(x=5,y=5)
+        self.lbl_url = tk.Label(self.frame_info, text='Ingrese la Url: ', font=('Arial', 12))
+        self.lbl_url.grid(row=0, column=0, sticky='w', padx=10)
         
         self.txt_url = tk.Entry(self.frame_info, width=40)
-        self.txt_url.place(x=110,y=5)
+        self.txt_url.grid(row=0, column=1)
 
+        self.lbl_path = tk.Label(self.frame_info, text='Ruta de destino: ', font=('Arial', 12))
+        self.lbl_path.grid(row=1, sticky='w', padx=10)
+
+        self.btn_dwn = tk.Button(self.frame_info, text='Descargar', command=self.download)
+        self.btn_dwn.grid(row=2, column=0, columnspan=2)
+
+    def download(self) -> None:
+        url = self.txt_url.get()
+        print(url)
         
 
 if __name__ == '__main__':
