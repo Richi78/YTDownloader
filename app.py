@@ -1,6 +1,11 @@
 import tkinter as tk
 from pytube import YouTube
 from PIL import Image, ImageTk
+import os
+from tkinter import filedialog as fd
+from tkinter import messagebox as mb 
+import sys 
+
 
 class Gui:
     def __init__(self, master) -> None:
@@ -43,6 +48,9 @@ class Gui:
         self.lbl_path = tk.Label(self.frame_info, text='Ruta de destino: ', font=('Arial', 12))
         self.lbl_path.grid(row=1, sticky='w', padx=10)
 
+        self.btn_ruta = tk.Button(self.frame_info, text='Buscar', command=self.getPath)
+        self.btn_ruta.grid(row=1, column=1, sticky='w')
+
         self.btn_dwn = tk.Button(self.frame_info, text='Descargar', command=self.download)
         self.btn_dwn.grid(row=2, column=0, columnspan=2)
 
@@ -50,6 +58,9 @@ class Gui:
         url = self.txt_url.get()
         print(url)
         
+    def getPath(self) -> None:
+        path = fd.askdirectory(initialdir='./', title='Ruta donde se va guardar la descarga')
+        print(path)
 
 if __name__ == '__main__':
     root = tk.Tk()
