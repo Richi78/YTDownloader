@@ -9,7 +9,7 @@ import os
 class Gui:
     def __init__(self, master) -> None:
         self.master = master
-        self.master.geometry('700x300')
+        self.master.geometry('300x300')
         self.master.title('Mi descargadar de videos de YouTube')
         
         # Imagen tortuguita
@@ -22,7 +22,7 @@ class Gui:
         
         # Frame imagen 
         self.frame_img = tk.Frame(self.master)
-        self.frame_img.place(x=0, y=0)
+        self.frame_img.pack()
         self.frame_img.config(bg='red', width=300, height=200)
 
         # ahora si es compatible usando el ImageTk
@@ -35,13 +35,13 @@ class Gui:
 
         # Frame info
         self.frame_info = tk.Frame(self.master)
-        self.frame_info.place(x=302,y=0)
+        self.frame_info.pack()
         self.frame_info.config(width=400, height=200) #bg='yellow', 
 
         self.lbl_url = tk.Label(self.frame_info, text='Ingrese la Url: ', font=('Arial', 12))
         self.lbl_url.grid(row=0, column=0, sticky='w', padx=10)
         
-        self.txt_url = tk.Entry(self.frame_info, width=40)
+        self.txt_url = tk.Entry(self.frame_info)
         self.txt_url.grid(row=0, column=1)
 
         self.lbl_path = tk.Label(self.frame_info, text='Ruta de destino: ', font=('Arial', 12))
