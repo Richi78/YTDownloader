@@ -53,7 +53,6 @@ class Gui:
         self.btn_dwn = tk.Button(self.frame_info, text='Descargar', command=self.download_video)
         self.btn_dwn.grid(row=2, column=0, columnspan=2)
 
-
     def verificar_tipo_url(self):
         url = self.txt_url.get()
         try:
@@ -69,14 +68,21 @@ class Gui:
     def download_video(self) -> None:
         my_object = self.verificar_tipo_url()
         if isinstance(my_object, YouTube): 
-            self.download_YouTube(my_object)
-            mb.showinfo(title='Bien!', message='Descarga finalizada.')
+            try:
+                self.download_YouTube(my_object)
+                mb.showinfo(title='Bien!', message='Descarga finalizada.')
+            except Exception as e:
+                mb.showerror(title='Descarga fallida', message=f'Se produjo un error {str(e)}')
+
         elif isinstance(my_object, Playlist):
             youTube_list = my_object.videos
             self.path = os.path.join(self.path, my_object.title)
             os.makedirs(name=self.path, exist_ok=True)
             for element in youTube_list:
-                self.download_YouTube(element)
+                try:
+                    self.download_YouTube(element)
+                except Exception as e:
+                    mb.showerror(title='Descarga fallida', message=f'Se produjo un error {str(e)}')
             mb.showinfo(title='Bien!', message='Descarga finalizada.')
         else:
             mb.showerror(title='Descarga fallida', 
@@ -91,10 +97,7 @@ class Gui:
     def getPath(self) -> None:
         self.path = fd.askdirectory(initialdir='./', title='Ruta donde se va guardar la descarga')
         
-
-
 if __name__ == '__main__':
     root = tk.Tk()
     my_gui = Gui(root)
-
     root.mainloop()

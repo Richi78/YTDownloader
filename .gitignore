@@ -1,3 +1,7 @@
 /venv
 *.pyc
 *.bak
+/build
+/dist
+app.spec
+*.txt
