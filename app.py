@@ -11,7 +11,7 @@ class Gui:
         self.master = master
         self.master.geometry('300x300')
         self.master.title('YTDownloader')
-        
+        self.path = './'
         # Imagen tortuguita
         """self.img = tk.PhotoImage(file='Tortuguita.png')
         self.label = tk.Label(self.master, image=self.img)
@@ -63,7 +63,8 @@ class Gui:
                 pl = Playlist(url)
                 return pl
             except:
-                return "Url no reconocida"
+                return mb.showerror(title='Descarga fallida', 
+                        message='La URL o la ruta de destino proporcionada no es valida.')
 
     def download_video(self) -> None:
         my_object = self.verificar_tipo_url()
@@ -72,18 +73,29 @@ class Gui:
                 self.download_YouTube(my_object)
                 mb.showinfo(title='Bien!', message='Descarga finalizada.')
             except Exception as e:
-                mb.showerror(title='Descarga fallida', message=f'Se produjo un error {str(e)}')
+                mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
 
         elif isinstance(my_object, Playlist):
-            youTube_list = my_object.videos
-            self.path = os.path.join(self.path, my_object.title)
-            os.makedirs(name=self.path, exist_ok=True)
+            try:
+                youTube_list = my_object.videos
+                self.path = os.path.join(self.path, my_object.title)
+                os.makedirs(name=self.path, exist_ok=True)
+            except Exception as e:
+                mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
+            
+            cont = 0
+
             for element in youTube_list:
                 try:
                     self.download_YouTube(element)
                 except Exception as e:
-                    mb.showerror(title='Descarga fallida', message=f'Se produjo un error {str(e)}')
-            mb.showinfo(title='Bien!', message='Descarga finalizada.')
+                    cont+=1
+                    #mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
+            if cont:
+                mb.showerror(title='Descarga finalizada', 
+                             message=f'La cantidad de videos que no se descargaron es: {cont}')
+            else: 
+                mb.showinfo(title='Bien!', message='Se descargaron todos los vidos del Playlist.')
         else:
             mb.showerror(title='Descarga fallida', 
                         message='La URL o la ruta de destino proporcionada no es valida.')
