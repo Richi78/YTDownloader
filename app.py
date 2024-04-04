@@ -51,7 +51,10 @@ class Gui:
         self.btn_ruta.grid(row=1, column=1, sticky='w')
 
         self.btn_dwn = tk.Button(self.frame_info, text='Descargar', command=self.download_video)
-        self.btn_dwn.grid(row=2, column=0, columnspan=2)
+        self.btn_dwn.grid(row=2, column=0)
+
+        self.btn_ext = tk.Button(self.frame_info, text='Extraer audio', command=self.download_audio)
+        self.btn_ext.grid(row=2, column=1)
 
     def verificar_tipo_url(self):
         url = self.txt_url.get()
@@ -95,10 +98,49 @@ class Gui:
                 mb.showerror(title='Descarga finalizada', 
                              message=f'La cantidad de videos que no se descargaron es: {cont}')
             else: 
-                mb.showinfo(title='Bien!', message='Se descargaron todos los vidos del Playlist.')
+                mb.showinfo(title='Bien!', message='Se descargaron todos los videos del Playlist.')
         else:
             mb.showerror(title='Descarga fallida', 
                         message='La URL o la ruta de destino proporcionada no es valida.')
+
+    def download_audio(self) -> None:
+        my_object = self.verificar_tipo_url()
+        if isinstance(my_object, YouTube): 
+            try:
+                self.download_audio_YouTube(my_object)
+                mb.showinfo(title='Bien!', message='Descarga finalizada.')
+            except Exception as e:
+                mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
+
+        elif isinstance(my_object, Playlist):
+            try:
+                youTube_list = my_object.videos
+                self.path = os.path.join(self.path, my_object.title)
+                os.makedirs(name=self.path, exist_ok=True)
+            except Exception as e:
+                mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
+            
+            cont = 0
+
+            for element in youTube_list:
+                try:
+                    self.download_audio_YouTube(element)
+                except Exception as e:
+                    cont+=1
+                    #mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
+            if cont:
+                mb.showerror(title='Descarga finalizada', 
+                             message=f'La cantidad de videos que no se descargaron es: {cont}')
+            else: 
+                mb.showinfo(title='Bien!', message='Se descargaron todos los audios del Playlist.')
+        else:
+            mb.showerror(title='Descarga fallida', 
+                        message='La URL o la ruta de destino proporcionada no es valida.')
+
+    def download_audio_YouTube(self, my_object):
+        aud = my_object.streams.filter(only_audio=True).first()
+        print(f'[+] Se esta descargando el audio: {my_object.title}')
+        output_path = aud.download(output_path=self.path, timeout=10, max_retries=1, skip_existing=True)
 
     def download_YouTube(self, my_object):
         vid = my_object.streams.get_highest_resolution()
