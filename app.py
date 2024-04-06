@@ -87,16 +87,17 @@ class Gui:
                 mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
             
             cont = 0
-
+            names = list()
             for element in youTube_list:
                 try:
                     self.download_YouTube(element)
                 except Exception as e:
                     cont+=1
+                    names.append(element.title)
                     #mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
             if cont:
                 mb.showerror(title='Descarga finalizada', 
-                             message=f'La cantidad de videos que no se descargaron es: {cont}')
+                             message=f'La cantidad de videos que no se descargaron es: {cont} los cuales son {", ".join(names)}')
             else: 
                 mb.showinfo(title='Bien!', message='Se descargaron todos los videos del Playlist.')
         else:
@@ -116,21 +117,23 @@ class Gui:
             try:
                 youTube_list = my_object.videos
                 self.path = os.path.join(self.path, my_object.title)
-                os.makedirs(name=self.path, exist_ok=True)
+                if not os.path.exists(self.path):
+                    os.makedirs(name=self.path, exist_ok=True)
             except Exception as e:
                 mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
             
             cont = 0
-
+            names = list()
             for element in youTube_list:
                 try:
                     self.download_audio_YouTube(element)
                 except Exception as e:
                     cont+=1
+                    names.append(element.title)
                     #mb.showerror(title='Descarga fallida', message=f'Se produjo un error "{str(e)}"')
             if cont:
                 mb.showerror(title='Descarga finalizada', 
-                             message=f'La cantidad de videos que no se descargaron es: {cont}')
+                             message=f'La cantidad de audios que no se descargaron es: {cont} los cuales son {", ".join(names)}')
             else: 
                 mb.showinfo(title='Bien!', message='Se descargaron todos los audios del Playlist.')
         else:
